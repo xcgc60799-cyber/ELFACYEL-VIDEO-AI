@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELFACYEL VIDEO AI — Music Video Studio</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#990011" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="badge">V1.0</span>
+        <h1>ELFACYEL <span>VIDEO AI</span></h1>
+      </div>
+      <div class="status-pill" id="projectStatus">Projet actif : Aucun</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" id="navTabs">
+      <button class="tab active" data-target="dashboard">Dashboard</button>
+      <button class="tab" data-target="projects">Projets</button>
+      <button class="tab" data-target="character">Character Lock</button>
+      <button class="tab" data-target="scenes">Scene Director</button>
+      <button class="tab" data-target="musicsync">Music Sync</button>
+      <button class="tab" data-target="editor">Video Editor</button>
+      <button class="tab" data-target="export">Export</button>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- 1. Dashboard -->
+      <section id="dashboard" class="panel active">
+        <h2>Studio Dashboard</h2>
+        <p class="subtitle">Créez des clips musicaux synchronisés au rythme — 100% Gratuit & Local.</p>
+        <div class="stats-grid">
+          <div class="card">
+            <h3>Projets sauvegardés</h3>
+            <p class="big-num" id="statProjects">0</p>
+          </div>
+          <div class="card">
+            <h3>Personnage verrouillé</h3>
+            <p class="big-num" id="statChar">Non défini</p>
+          </div>
+          <div class="card">
+            <h3>Scènes prêtes</h3>
+            <p class="big-num" id="statScenes">0</p>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="switchTab('projects')">+ Nouveau Clip Musical</button>
+      </section>
+
+      <!-- 2. Project Manager -->
+      <section id="projects" class="panel">
+        <h2>Project Manager</h2>
+        <div class="form-group">
+          <input type="text" id="projectNameInput" placeholder="Titre du morceau (ex: ELFACYEL - Ya Tabiba)" />
+          <select id="projectRatio">
+            <option value="16:9">16:9 (YouTube / Cinéma)</option>
+            <option value="9:16">9:16 (TikTok / Reels / Shorts)</option>
+            <option value="1:1">1:1 (Instagram / Spotify Canvas)</option>
+          </select>
+          <button class="btn-primary" id="createProjectBtn">Créer le Projet</button>
+        </div>
+        <ul class="item-list" id="projectList"></ul>
+      </section>
+
+      <!-- 3. Character Lock -->
+      <section id="character" class="panel">
+        <h2>Character Lock (Cohérence Visuelle)</h2>
+        <p class="subtitle">Définissez l'identité visuelle fixe de l'artiste pour toutes les scènes.</p>
+        <div class="form-group">
+          <input type="text" id="charName" placeholder="Nom de l'artiste (ex: ELFACYEL)" value="ELFACYEL" />
+          <textarea id="charPrompt" rows="3" placeholder="Apparence fixe (ex: Homme algérien, veste en cuir noir, éclairage néon rouge cramoisi, ambiance cinématographique sombre, 8k)"></textarea>
+          <input type="file" id="charRefImage" accept="image/*" />
+          <button class="btn-primary" id="saveCharBtn">Verrouiller le Personnage</button>
+        </div>
+        <div class="preview-box" id="charPreview">Aucun personnage verrouillé.</div>
+      </section>
+
+      <!-- 4. Scene Director -->
+      <section id="scenes" class="panel">
+        <h2>Scene Director</h2>
+        <p class="subtitle">Ajoutez des scènes (images importées ou prompts générés) à votre timeline.</p>
+        <div class="form-group">
+          <input type="text" id="sceneTitle" placeholder="Nom de la scène (ex: Intro Nuit)" />
+          <input type="number" id="sceneDuration" value="4" min="1" max="30" placeholder="Durée (sec)" />
+          <input type="file" id="sceneImageInput" accept="image/*" />
+          <button class="btn-primary" id="addSceneBtn">Ajouter la Scène</button>
+        </div>
+        <div class="scenes-grid" id="scenesContainer"></div>
+      </section>
+
+      <!-- 5. Music Sync -->
+      <section id="musicsync" class="panel">
+        <h2>Music Sync (Analyse Audio Réelle)</h2>
+        <p class="subtitle">Importez votre piste audio (MP3/WAV) pour détecter les basses et synchroniser les effets.</p>
+        <input type="file" id="audioFileInput" accept="audio/*" />
+        <audio id="audioPlayer" controls class="audio-bar"></audio>
+        <canvas id="visualizerCanvas" width="600" height="140"></canvas>
+      </section>
+
+      <!-- 6. Video Editor -->
+      <section id="editor" class="panel">
+        <h2>Video Editor & Aperçu Temps Réel</h2>
+        <div class="editor-controls">
+          <select id="effectSelect">
+            <option value="pulse">Effet : Bass Pulse (Zoom sur le rythme)</option>
+            <option value="crimson">Effet : Filtre Crimson Dark</option>
+            <option value="shake">Effet : Caméra Shake (Impact)</option>
+            <option value="none">Aucun effet</option>
+          </select>
+          <button class="btn-primary" id="playPreviewBtn">▶ Lancer l'aperçu synchronisé</button>
+          <button class="btn-secondary" id="stopPreviewBtn">⏹ Stop</button>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="studioCanvas" width="640" height="360"></canvas>
+        </div>
+      </section>
+
+      <!-- 7. Export -->
+      <section id="export" class="panel">
+        <h2>Export du Clip</h2>
+        <p class="subtitle">Rendu vidéo direct depuis votre navigateur (Format WebM haute qualité, 0 DA).</p>
+        <button class="btn-primary" id="startExportBtn">🔴 Démarrer l'enregistrement & Export</button>
+        <p id="exportStatus" class="status-text">Prêt pour le rendu.</p>
+        <div id="downloadContainer"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+  </html>
+  
